@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Waste2Taste — Entity Relationship Diagram</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+    background: #ffffff;
+    color: #1a1a1a;
+    padding: 40px 24px;
+    min-height: 100vh;
+  }
+  .container {
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+  header {
+    text-align: center;
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 3px solid #2E7D32;
+  }
+  h1 {
+    color: #1F4E2D;
+    font-size: 26px;
+    margin-bottom: 6px;
+    font-weight: 700;
+  }
+  .subtitle {
+    color: #5F5E5A;
+    font-size: 14px;
+  }
+  .controls {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .btn {
+    background: #2E7D32;
+    color: white;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    margin: 0 4px;
+    font-weight: 500;
+  }
+  .btn:hover { background: #1F4E2D; }
+  #erd-container {
+    background: #ffffff;
+    border: 1px solid #d4d4d4;
+    border-radius: 8px;
+    padding: 24px;
+    overflow: auto;
+    text-align: center;
+  }
+  #erd svg {
+    max-width: 100%;
+    height: auto;
+    background: #ffffff !important;
+  }
+  /* PAKSA semua warna jadi light mode kontras tinggi */
+  #erd svg * {
+    color: #1a1a1a !important;
+  }
+  #erd .er.entityBox {
+    fill: #FAFAFA !important;
+    stroke: #2E7D32 !important;
+    stroke-width: 1.5px !important;
+  }
+  #erd .er.attributeBoxOdd {
+    fill: #f5f9f5 !important;
+    stroke: #d4d4d4 !important;
+  }
+  #erd .er.attributeBoxEven {
+    fill: #ffffff !important;
+    stroke: #d4d4d4 !important;
+  }
+  #erd .er.entityLabel {
+    fill: #1F4E2D !important;
+    font-weight: 700 !important;
+    font-size: 14px !important;
+  }
+  #erd text {
+    fill: #1a1a1a !important;
+    font-family: 'Segoe UI', Arial, sans-serif !important;
+  }
+  #erd .er.entityLabel text,
+  #erd g.entityBox text,
+  #erd .nodeLabel {
+    fill: #1F4E2D !important;
+  }
+  #erd .relationshipLine, #erd path.er.relationshipLine {
+    stroke: #444 !important;
+    fill: none !important;
+    stroke-width: 1.2px !important;
+  }
+  #erd .relationshipLabelBox {
+    fill: #ffffff !important;
+    stroke: none !important;
+  }
+  .legend {
+    margin-top: 24px;
+    padding: 18px;
+    background: #f5f9f5;
+    border-radius: 8px;
+    border-left: 4px solid #2E7D32;
+  }
+  .legend h3 {
+    color: #1F4E2D;
+    font-size: 15px;
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+  .legend-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 8px 24px;
+    font-size: 13px;
+    color: #333;
+  }
+  .legend-grid div {
+    line-height: 1.7;
+  }
+  .legend code {
+    background: #e8f0e8;
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-size: 12px;
+    color: #1F4E2D;
+    font-weight: 600;
+  }
+  .info {
+    margin-top: 16px;
+    padding: 14px 18px;
+    background: #fff8e1;
+    border-radius: 8px;
+    border-left: 4px solid #f9a825;
+    font-size: 13px;
+    color: #5d4e00;
+    line-height: 1.6;
+  }
+  @media print {
+    body { padding: 0; background: white; }
+    .controls { display: none; }
+    #erd-container { border: none; padding: 0; }
+    .info { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Entity Relationship Diagram</h1>
+    <div class="subtitle">Waste2Taste — Database Schema Design (12 Entities, 3NF)</div>
+  </header>
+
+  <div class="controls">
+    <button class="btn" onclick="window.print()">Print / Save as PDF</button>
+    <button class="btn" onclick="downloadSVG()">Download as SVG</button>
+    <button class="btn" onclick="downloadPNG()">Download as PNG</button>
+  </div>
+
+  <div id="erd-container">
+    <div id="erd">Loading diagram...</div>
+  </div>
+
+  <div class="legend">
+    <h3>Notasi Crow's Foot</h3>
+    <div class="legend-grid">
+      <div><code>||--o{</code> One-to-Many (1:N) — wajib ada di sisi 1</div>
+      <div><code>||--||</code> One-to-One (1:1) — wajib di kedua sisi</div>
+      <div><code>}o--||</code> Many-to-One (N:1) — wajib di sisi N</div>
+      <div><code>PK</code> Primary Key &nbsp;&nbsp; <code>FK</code> Foreign Key &nbsp;&nbsp; <code>UK</code> Unique Key</div>
+    </div>
+  </div>
+
+  <div class="info">
+    <strong>Tips export:</strong> Untuk hasil terbaik di paper, klik "Download as PNG" — resolusinya tinggi dan background dijamin putih bersih. Atau klik "Print / Save as PDF" untuk format dokumen.
+  </div>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+
+mermaid.initialize({
+  startOnLoad: false,
+  theme: 'default',
+  securityLevel: 'loose',
+  fontFamily: '"Segoe UI", Arial, sans-serif',
+  themeVariables: {
+    primaryColor: '#FAFAFA',
+    primaryTextColor: '#1F4E2D',
+    primaryBorderColor: '#2E7D32',
+    lineColor: '#444444',
+    secondaryColor: '#f5f9f5',
+    tertiaryColor: '#ffffff',
+    background: '#ffffff',
+    mainBkg: '#FAFAFA',
+    secondBkg: '#ffffff',
+    fontSize: '13px',
+  },
+  er: {
+    diagramPadding: 20,
+    layoutDirection: 'TB',
+    minEntityWidth: 140,
+    minEntityHeight: 75,
+    entityPadding: 15,
+    stroke: '#2E7D32',
+    fill: '#FAFAFA',
+    fontSize: 13,
+  }
+});
+
+const erdDefinition = `erDiagram
+  ROLES ||--o{ USERS : "assigned_to"
+  USERS ||--o{ SCAN_HISTORY : "performs"
+  USERS ||--o{ FAVORITES : "saves"
+  USERS ||--o{ REVIEWS : "writes"
+  USERS ||--o{ COOKING_HISTORY : "logs"
+  CATEGORIES ||--o{ INGREDIENTS : "groups"
+  SCAN_HISTORY ||--o{ DETECTED_INGREDIENTS : "produces"
+  INGREDIENTS ||--o{ DETECTED_INGREDIENTS : "identified_as"
+  SCAN_HISTORY ||--o{ RECIPE_RECOMMENDATIONS : "generates"
+  RECIPES ||--o{ RECIPE_RECOMMENDATIONS : "suggested_in"
+  RECIPES ||--o{ RECIPE_INGREDIENTS : "contains"
+  INGREDIENTS ||--o{ RECIPE_INGREDIENTS : "used_in"
+  RECIPES ||--|| NUTRITION_INFO : "has"
+  RECIPES ||--o{ FAVORITES : "saved_as"
+  RECIPES ||--o{ REVIEWS : "receives"
+  RECIPES ||--o{ COOKING_HISTORY : "cooked_in"
+
+  ROLES {
+    int role_id PK
+    varchar role_name UK
+    jsonb permissions
+    timestamp created_at
+  }
+
+  USERS {
+    int user_id PK
+    varchar email UK
+    varchar password_hash
+    varchar full_name
+    int role_id FK
+    boolean is_active
+    timestamp created_at
+    timestamp updated_at
+  }
+
+  CATEGORIES {
+    int category_id PK
+    varchar category_name UK
+    text description
+  }
+
+  INGREDIENTS {
+    int ingredient_id PK
+    varchar name
+    int category_id FK
+    varchar usda_food_id
+    text description
+    varchar image_url
+  }
+
+  SCAN_HISTORY {
+    int scan_id PK
+    int user_id FK
+    varchar image_url
+    varchar status
+    int processing_time_ms
+    timestamp scanned_at
+  }
+
+  DETECTED_INGREDIENTS {
+    int detection_id PK
+    int scan_id FK
+    int ingredient_id FK
+    decimal confidence
+    jsonb bounding_box
+    boolean is_confirmed
+  }
+
+  RECIPES {
+    int recipe_id PK
+    varchar title
+    text description
+    text instructions
+    int prep_time_minutes
+    int cook_time_minutes
+    int servings
+    varchar difficulty
+    int created_by FK
+    boolean is_published
+    timestamp created_at
+  }
+
+  RECIPE_INGREDIENTS {
+    int recipe_ingredient_id PK
+    int recipe_id FK
+    int ingredient_id FK
+    decimal quantity
+    varchar unit
+    boolean is_optional
+  }
+
+  RECIPE_RECOMMENDATIONS {
+    int recommendation_id PK
+    int scan_id FK
+    int recipe_id FK
+    decimal match_score
+    int rank
+    timestamp created_at
+  }
+
+  NUTRITION_INFO {
+    int nutrition_id PK
+    int recipe_id FK
+    decimal calories
+    decimal carbohydrates_g
+    decimal protein_g
+    decimal fat_g
+    decimal fiber_g
+    decimal sugar_g
+    decimal sodium_mg
+    varchar data_source
+  }
+
+  FAVORITES {
+    int favorite_id PK
+    int user_id FK
+    int recipe_id FK
+    timestamp saved_at
+  }
+
+  REVIEWS {
+    int review_id PK
+    int user_id FK
+    int recipe_id FK
+    int rating
+    text comment
+    timestamp created_at
+  }
+
+  COOKING_HISTORY {
+    int history_id PK
+    int user_id FK
+    int recipe_id FK
+    text notes
+    timestamp cooked_at
+  }`;
+
+async function renderDiagram() {
+  try {
+    const { svg } = await mermaid.render('erd-svg', erdDefinition);
+    document.getElementById('erd').innerHTML = svg;
+
+    // Pastikan SVG punya background putih dan bisa di-export
+    const svgElement = document.querySelector('#erd svg');
+    if (svgElement) {
+      svgElement.style.background = '#ffffff';
+      svgElement.setAttribute('style', 'background: #ffffff; max-width: 100%; height: auto;');
+    }
+  } catch (error) {
+    document.getElementById('erd').innerHTML =
+      '<p style="color:#c62828;padding:20px;">Error rendering diagram: ' + error.message + '</p>';
+    console.error(error);
+  }
+}
+
+window.downloadSVG = function() {
+  const svg = document.querySelector('#erd svg');
+  if (!svg) return alert('Diagram belum ter-render');
+
+  const clone = svg.cloneNode(true);
+  clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  clone.style.background = '#ffffff';
+
+  // Inject background rect putih
+  const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  bg.setAttribute('width', '100%');
+  bg.setAttribute('height', '100%');
+  bg.setAttribute('fill', '#ffffff');
+  clone.insertBefore(bg, clone.firstChild);
+
+  const svgData = new XMLSerializer().serializeToString(clone);
+  const blob = new Blob([svgData], { type: 'image/svg+xml' });
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'waste2taste-erd.svg';
+  link.click();
+  URL.revokeObjectURL(url);
+};
+
+window.downloadPNG = function() {
+  const svg = document.querySelector('#erd svg');
+  if (!svg) return alert('Diagram belum ter-render');
+
+  const clone = svg.cloneNode(true);
+  clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+
+  const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  bg.setAttribute('width', '100%');
+  bg.setAttribute('height', '100%');
+  bg.setAttribute('fill', '#ffffff');
+  clone.insertBefore(bg, clone.firstChild);
+
+  const svgData = new XMLSerializer().serializeToString(clone);
+  const svg64 = btoa(unescape(encodeURIComponent(svgData)));
+  const image64 = 'data:image/svg+xml;base64,' + svg64;
+
+  const img = new Image();
+  img.onload = function() {
+    const canvas = document.createElement('canvas');
+    // Resolusi tinggi untuk paper (3x scale)
+    const scale = 3;
+    canvas.width = img.width * scale;
+    canvas.height = img.height * scale;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.scale(scale, scale);
+    ctx.drawImage(img, 0, 0);
+
+    canvas.toBlob(function(blob) {
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'waste2taste-erd.png';
+      link.click();
+    }, 'image/png');
+  };
+  img.src = image64;
+};
+
+renderDiagram();
+</script>
+</body>
+</html>
